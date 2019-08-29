@@ -3,7 +3,6 @@
 Nunjucks template loader for Webpack to generate static HTML files.
 
 [![NPM version][npm-image]][npm-url]
-[![Github license][github-license-image]][github-url]
 [![Github stars][github-image]][github-url]
 
 ## Setup
@@ -47,4 +46,3 @@ TO-DO...
 [npm-image]: https://img.shields.io/npm/v/@sky-foundry/nunjucks-html-loader.svg
 [github-url]: https://github.com/sky-foundry/nunjucks-html-loader
 [github-image]: https://img.shields.io/github/stars/sky-foundry/nunjucks-html-loader.svg?style=social&label=Star
-[github-license-image]: https://img.shields.io/github/license/sky-foundry/nunjucks-html-loader.svg
