@@ -1,38 +1,50 @@
-Nunjucks (Webpack) HTML Loader
-==============================
-The original 'nunjucks-loader' takes nunjucks templates and turns them into javascript. I wanted to take nunjucks templates and turn them into pre-compiled static html files.
+# SkyFoundry Nunjucks (Webpack) HTML Loader
+
+Nunjucks template loader for Webpack to generate static HTML files.
 
 [![NPM version][npm-image]][npm-url]
 [![Github license][github-license-image]][github-url]
 [![Github stars][github-image]][github-url]
 
-Usage
------
+## Setup
 
-This is a very simple webpack loader for nunjucks files. It performs the following opteration:
+You should already have a webpack project setup and a webpack config file in your project.
 
-    some-template.nunj -> html string
+### HTML Webpack Plugin
 
-When you mix it with the file-loader you can take it one step further!
+You should first setup [`html-webpack-plugin`](https://github.com/jantimon/html-webpack-plugin) with `inject: 'body'` and `template: 'nunjucks-html-loader!./src/pages/index.njk'` (your entry nunjucks template).
 
-    some-template.nunj -> html string -> some-file.html
+```js
+plugins: [
+  new HtmlWebpackPlugin({
+    inject: 'body',
+    template: 'nunjucks-html-loader!./src/pages/index.njk',
+  }),
+]
+```
 
-Add your personal variation to the below loader configuration to your webpack config and you should be good to go.
+### Webpack Copy Plugin
 
-	{
-        test: /\.nunj$/,
-        loader: 'file?context=' + precompiledContext + '&name=[path][name].html!nunjucks-html?' +
-        	JSON.stringify({
-        		'searchPaths': [
-					'/path/to/sources',
-					'/path/to/more/sources'
-				]
-        	})
-    }
+For images and other assets, the [CopyPlugin](https://github.com/webpack-contrib/copy-webpack-plugin) is best suited for this.
 
+The recommended options are:
 
-[npm-url]: https://www.npmjs.com/package/nunjucks-html-loader
-[npm-image]: https://img.shields.io/npm/v/nunjucks-html-loader.svg
-[github-url]: https://github.com/ryanhornberger/nunjucks-html-loader
-[github-image]: https://img.shields.io/github/stars/ryanhornberger/nunjucks-html-loader.svg?style=social&label=Star
-[github-license-image]: https://img.shields.io/github/license/ryanhornberger/nunjucks-html-loader.svg
+```js
+plugins: [
+  // ... (html webpack plugin and others)
+  new CopyPlugin([
+    {
+      from: '**/*.{jpg,png,gif,svg,woff,eot,ttf}',
+      context: 'src',
+    },
+  ]),
+]
+```
+
+TO-DO...
+
+[npm-url]: https://www.npmjs.com/package/@sky-foundry/nunjucks-html-loader
+[npm-image]: https://img.shields.io/npm/v/@sky-foundry/nunjucks-html-loader.svg
+[github-url]: https://github.com/sky-foundry/nunjucks-html-loader
+[github-image]: https://img.shields.io/github/stars/sky-foundry/nunjucks-html-loader.svg?style=social&label=Star
+[github-license-image]: https://img.shields.io/github/license/sky-foundry/nunjucks-html-loader.svg
