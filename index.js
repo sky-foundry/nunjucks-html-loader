@@ -1,9 +1,10 @@
-var utils = require('loader-utils')
-var fs = require('fs')
-var path = require('path')
-var nunjucks = require('nunjucks')
+const utils = require('loader-utils')
+const fs = require('fs')
+const path = require('path')
+const nunjucks = require('nunjucks')
+const i18n = require('i18n')
 
-var NunjucksLoader = nunjucks.Loader.extend({
+const NunjucksLoader = nunjucks.Loader.extend({
   // Based off of the Nunjucks 'FileSystemLoader'
 
   init: function(searchPaths, sourceFoundCallback) {
@@ -18,12 +19,12 @@ var NunjucksLoader = nunjucks.Loader.extend({
   },
 
   getSource: function(name) {
-    var fullpath = null
-    var paths = this.searchPaths
+    let fullpath = null
+    const paths = this.searchPaths
 
     for (var i = 0; i < paths.length; i++) {
-      var basePath = path.resolve(paths[i])
-      var p = path.resolve(paths[i], name)
+      const basePath = path.resolve(paths[i])
+      const p = path.resolve(paths[i], name)
 
       // Only allow the current directory and anything
       // underneath it to be searched
@@ -50,26 +51,35 @@ var NunjucksLoader = nunjucks.Loader.extend({
 module.exports = function(content) {
   this.cacheable()
 
-  var callback = this.async()
-  var opt = utils.getOptions(this) || {}
+  const callback = this.async()
+  const opt = utils.getOptions(this) || {}
 
-  var nunjucksSearchPaths = opt.searchPaths
-  var nunjucksContext = opt.context
-  var config = opt.configure || {}
-  var configureEnvironment = opt.configureEnvironment || function(env) {}
+  const nunjucksSearchPaths = opt.searchPaths
+  const nunjucksContext = opt.context
+  const config = opt.configure || {}
+  const configureEnvironment = opt.configureEnvironment || function(env) {}
+  const i18nOptions = opt.i18n
 
-  var loader = new NunjucksLoader(
+  if (i18nOptions) {
+    i18n.configure(i18nOptions)
+    content = content.replace(
+      /{{\s*__\(['"](.*)['"]\)\s*}}/g,
+      (fullStr, key) => i18n.__(key) || fullStr
+    )
+  }
+
+  const loader = new NunjucksLoader(
     nunjucksSearchPaths,
     function(path) {
       this.addDependency(path)
     }.bind(this)
   )
 
-  var nunjEnv = new nunjucks.Environment(loader, config)
+  const nunjEnv = new nunjucks.Environment(loader, config)
 
   configureEnvironment(nunjEnv)
 
-  var template = nunjucks.compile(content, nunjEnv)
+  const template = nunjucks.compile(content, nunjEnv)
   html = template.render(nunjucksContext)
 
   callback(null, html)
