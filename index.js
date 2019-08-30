@@ -60,14 +60,6 @@ module.exports = function(content) {
   const configureEnvironment = opt.configureEnvironment || function(env) {}
   const i18nOptions = opt.i18n
 
-  if (i18nOptions) {
-    i18n.configure(i18nOptions)
-    content = content.replace(
-      /{{\s*__\(['"](.*)['"]\)\s*}}/g,
-      (fullStr, key) => i18n.__(key) || fullStr
-    )
-  }
-
   const loader = new NunjucksLoader(
     nunjucksSearchPaths,
     function(path) {
@@ -77,10 +69,15 @@ module.exports = function(content) {
 
   const nunjEnv = new nunjucks.Environment(loader, config)
 
+  if (i18nOptions) {
+    i18n.configure(i18nOptions)
+    nunjEnv.addGlobal('__', i18n.__)
+  }
+
   configureEnvironment(nunjEnv)
 
   const template = nunjucks.compile(content, nunjEnv)
-  html = template.render(nunjucksContext)
+  const html = template.render(nunjucksContext)
 
   callback(null, html)
 }
