@@ -1,6 +1,6 @@
 {
   "name": "@sky-foundry/nunjucks-html-loader",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A webpack loader that takes nunjucks templates and returns raw html. It also works with webpack's watch command",
   "npmName": "@sky-foundry/nunjucks-html-loader",
   "keywords": [
