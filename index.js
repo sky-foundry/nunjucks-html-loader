@@ -71,7 +71,15 @@ module.exports = function(content) {
 
   if (i18nOptions) {
     i18n.configure(i18nOptions)
-    nunjEnv.addGlobal('__', i18n.__)
+    nunjEnv.addGlobal(
+      '__',
+      !i18nOptions.transformFunc
+        ? i18n.__
+        : function(key) {
+            let result = i18n.__(...arguments)
+            return i18nOptions.transformFunc(key, result)
+          }
+    )
   }
 
   configureEnvironment(nunjEnv)
