@@ -51,6 +51,9 @@ const NunjucksLoader = nunjucks.Loader.extend({
 module.exports = function(content) {
   this.cacheable()
 
+  const currentRequest = utils.getCurrentRequest(this)
+  const currentLocale = currentRequest.substr(currentRequest.length - 6, 2)
+
   const callback = this.async()
   const opt = utils.getOptions(this) || {}
 
@@ -70,7 +73,7 @@ module.exports = function(content) {
   const nunjEnv = new nunjucks.Environment(loader, config)
 
   if (i18nOptions) {
-    i18n.configure(i18nOptions)
+    i18n.configure({ ...i18nOptions, defaultLocale: currentLocale })
     nunjEnv.addGlobal(
       '__',
       !i18nOptions.transformFunc
