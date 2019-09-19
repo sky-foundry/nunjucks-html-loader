@@ -58,7 +58,10 @@ module.exports = function(content) {
   const opt = utils.getOptions(this) || {}
 
   const nunjucksSearchPaths = opt.searchPaths
-  const nunjucksContext = opt.context
+  const nunjucksContext = {
+    activeLocale: currentLocale,
+    ...(opt.context || {}),
+  }
   const config = opt.configure || {}
   const configureEnvironment = opt.configureEnvironment || function(env) {}
   const i18nOptions = opt.i18n
